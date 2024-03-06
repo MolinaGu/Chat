@@ -1,1 +1,541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+        html, body{
+            width: 100%;
+            height: 100%;
+            background-attachment: cover;
+            background-color: #333;
+            position: relative;
+        }
+        .myname{
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            border: none;
+            border-radius: 10px;
+            color: #333;
+            padding: 2em;
+            flex-wrap: wrap;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            height: fit-content;
+            width: auto;
+            background-color: #e6e6e6d4;
+            border-radius: 10px;
+            transition: 0.5s;
+            box-shadow: 0 0 5px #c5c5c52d;
+        }
+    
+        .inpt{
+            outline: none;
+            border: 4px solid #333;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 10px;
+            color: #333;
+        }
+        .bt11{
+            padding: 10px;
+            border-radius: 10px;
+            background-color: #fff;
+            color: #333;
+            border: 4px solid #333;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: fit-content;
+            height: fit-content;
+        }
+        .myname:hover{
+            box-shadow: 0 0 20px #c9c8c8bd;
+        }
+        .bt12{
+            padding: 10px;
+            border-radius: 10px;
+            background-color: #333;
+            color: #fff;
+            border: 4px solid #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: fit-content;
+            height: fit-content;
+            margin-top: 15px;
+        }
 
+        .btdiv{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+        #nameinpt{
+            margin: 10px 0 10px 0;
+        }
+
+        .app{
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 30%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .chat{
+            height: 70%;
+            width: 100%;
+            border: none;
+            padding: 5px 20px 20px 20px;
+            background-color: #fff;
+            border-radius: 20px;
+            overflow-y: scroll;
+        }
+        #message{
+            width: 100%;
+            height: 15%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+        }
+        #enviar_msg{
+            width: 20%;
+            overflow: hidden;
+        }
+        #enviar_msg:is(:active, :focus) > .icon{
+            animation: send_animation 1s linear;
+        }
+        #displayname{
+            margin-bottom: 15px;
+        }
+        .on{
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            background-color: #fff;
+            color: #333;
+            border: 4px solid #333;
+            border-radius: 10px;
+            width: fit-content;
+            height: fit-content;
+        }
+
+        .msg{
+            padding: 10px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            justify-content: space-evenly;
+            max-width: 75%;
+            width: fit-content;
+            height: auto;
+            word-wrap: wrap;
+            margin: 15px 0 15px 0;
+        }
+        .msg-my{
+            position: relative;
+            background-color: #fff;
+            border: 4px solid #333;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: end;
+            padding: 20px;
+            left: 100%;
+            transform: translate(-100%, 0%);
+        }
+
+        .msg-other{
+            position: relative;
+            background-color: #333;
+            border: 4px solid #fff;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            padding: 20px;
+            left: 1%;
+        }
+
+        @keyframes send_animation {
+            0%{
+                transform: translate(0%, 0%);
+            }
+            5%{
+                transform: translate(25%, -25%);
+            }
+            10%{
+                transform: translate(50%, -50%);
+            }
+            20%{
+                transform: translate(75%, -75%);
+            }
+            25%{
+                transform: translate(250%, -250%);
+            }
+            25%{
+                transform: translate(500%, -500%);
+            }
+            50%{
+                transform: rotate(180deg);
+            }
+            75%{
+                transform: translate(0%, 0%);
+            }
+            100%{
+                transform: rotate(0deg);
+            }
+        }
+        .btdiv2{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+        }
+        .usersonline{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-evenly;
+            position: absolute;
+            left: 75%;
+            transform: translate(-50%, 0);
+            top: 2em;
+            color: #fff;
+        }
+
+
+        .hide{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="myname" id="myname">
+        <div class="tela_login" id="tela_login">
+            <h3>Login</h3>
+            <input type="text" name="input name" id="login" class="inpt" placeholder="Digite aqui...">
+            <h3>Senha</h3>
+            <input type="password" name="senha" id="senha" class="inpt" placeholder="Digite aqui..." style="margin-bottom: 15px;">
+            <div class="btdiv">
+                <a href="#" class="bt11" id="entrar">Entrar</a>
+                <a href="#" class="bt12" id="criar">Criar conta</a>
+            </div>
+        </div>
+            
+            <div class="criar_login hide" id="criar_login">
+                <h3>Seu nome completo</h3>
+                <input type="text" class="inpt" name="nome" id="nome_completo" placeholder="Digite aqui...">
+                <h3>Seu nome de usuário</h3>
+                <input type="text"  class="inpt" name="nome de usuario" id="user_name" placeholder="Digite aqui...">
+                <h3>Sua senha</h3>
+                <input type="password"  class="inpt" name="senha" id="user_password" placeholder="Digite aqui...">
+                <div class="btdiv2">
+                    <a href="#" class="bt11" id="finalizar_conta" style="margin-top: 15px;">Pronto!</a>
+                    <a href="#" class="bt12" id="voltar">Voltar</a>
+                </div>
+            </div>
+
+
+    </div>
+
+    <div class="app hide" id="app">
+
+        <h1 id="displayname" style="color: #fff;"></h1>
+
+        <div class="chat" id="chat"></div>
+
+        <div id="message">
+            <input type="text" name="mensagem" id="new_message" class="inpt" placeholder="Digite a mensagem">
+            <a href="#" class="bt11" id="enviar_msg"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="20" height="20" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+                <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
+            </svg></a>
+        </div>
+    </div>
+        <div class="usersonline hide" id="usersonline">
+            <h2>Usuários online</h2>
+        </div>
+
+    
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    const socket = io();
+
+        let me = "";
+
+        let myname = document.getElementById('tela_login');
+        let criar = document.getElementById('criar_login');
+        let app = document.getElementById('app');
+        let usersonline = document.getElementById('usersonline');
+        let app_hide = true;
+        let myname_hide = false;
+        let criar_hide = true;
+
+
+
+        document.getElementById('voltar').addEventListener('click', ()=>{
+            myname.classList.remove('hide');
+            criar.classList.add('hide');
+            app.classList.add('hide');
+            usersonline.classList.add('hide');
+            myname_hide = false;
+            app_hide = true;
+            criar_hide = true;
+        });
+
+
+        document.getElementById('criar').addEventListener('click', ()=>{
+            myname.classList.add('hide')
+            criar.classList.remove('hide');
+            app.classList.add('hide');
+            usersonline.classList.add('hide');
+            app_hide = true;
+            myname_hide = true;
+            criar_hide = false;
+        });
+
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                if(app_hide == false && myname_hide == true && criar_hide === true){
+                    let msg = document.getElementById('new_message').value;
+                    if(msg.split() == ""){
+                        alert("Digite algo");
+                    }else{
+                        new_msg = {
+                            "autor": me.usuario,
+                            "mensagem": msg
+                        };
+                        socket.emit('newmessage', new_msg);
+                        document.getElementById('new_message').value = "";
+                    }
+                }else if(app_hide == true && myname_hide == false && criar_hide === true){
+                    let user_try = document.getElementById('login').value;
+                    let password_try = document.getElementById('senha').value;
+                    let tentativa = {
+                        "user_try": user_try,
+                        "password_try": password_try
+                    };
+                    socket.emit('trylogin', tentativa);
+                }else if(criar_hide === false && app_hide == true && myname_hide == true){
+                    let all_name = document.getElementById('nome_completo').value;
+                    let name_user = document.getElementById('user_name').value;
+                    let password = document.getElementById('user_password').value;
+                    if(name_user.length <= 1){
+                        alert("Seu usuário deve ter pelo menos 2 letrar para entrar");
+                    }else if(all_name.length < 5){
+                        alert("Digite seu nome COMLETO por favor");
+                    }else if(password.length < 6){
+                        alert("Sua senha deve ter no mínimo 6 dígitos");
+                    }else{
+                    let rg = {
+                        "nome": all_name,
+                        "usuario": name_user,
+                        "senha": password,
+                        "estado": "off",
+                        "id": 0
+                    }
+                    me = rg;
+                    socket.emit('newuser', rg);
+                }
+                }
+            }
+        });
+
+
+        
+        document.getElementById('finalizar_conta').addEventListener('click', ()=>{
+            let all_name = document.getElementById('nome_completo').value;
+            let name_user = document.getElementById('user_name').value;
+            let password = document.getElementById('user_password').value;
+            if(name_user.length <= 1){
+                        alert("Seu usuário deve ter pelo menos 2 letrar para entrar");
+                    }else if(all_name.length < 5){
+                        alert("Digite seu nome COMLETO por favor");
+                    }else if(password.length < 6){
+                        alert("Sua senha deve ter no mínimo 6 dígitos");
+                    }else{
+                        let rg = {
+                        "nome": all_name,
+                        "usuario": name_user,
+                        "senha": password,
+                        "estado": "off"
+                    }
+                    me = rg;
+                    socket.emit('newuser', rg);
+                }
+});
+socket.on('resposta_criar', (arg)=>{
+    alert(arg);
+    myname.classList.remove('hide');
+    criar.classList.add('hide');
+    chat.classList.add('hide');
+    app_hide = true;
+});
+
+socket.on('user_em_uso', (arg)=>{
+    alert(arg);
+});
+
+
+
+document.getElementById('entrar').addEventListener('click', ()=>{
+    let user_try = document.getElementById('login').value;
+                    let password_try = document.getElementById('senha').value;
+                    let tentativa = {
+                        "user_try": user_try,
+                        "password_try": password_try
+                    };
+                    socket.emit('trylogin', tentativa);
+                })
+                
+                socket.on('conectado', (arg)=>{
+                    me = arg;
+                    console.log(me);
+                    
+            criar.classList.add("hide");
+            myname.classList.add("hide");
+            app.classList.remove("hide");
+            usersonline.classList.remove('hide');
+            app_hide = false;
+            myname_hide = true;
+            criar_hide = true;
+            document.getElementById('displayname').innerHTML = me.usuario;
+            
+        });
+        socket.on('conectado_failed', (arg)=>{
+            window.alert(arg);
+        })
+        
+        socket.on('mensagens_anteriores', (arg)=>{
+            let chat = document.getElementById('chat');
+            chat.innerHTML = "";
+            for(var i = 0; i < arg.length; i++){
+                if(arg[i].autor.toLowerCase() === me.usuario.toLowerCase()){
+                    chat.innerHTML += `
+                    <div class="msg msg-my">
+                        <h3>Você</h3>
+                        <p>${arg[i].mensagem}</p>
+                        </div>
+                        `;
+                }else{
+                    chat.innerHTML += `
+                    <div class="msg msg-other">
+                        <h3>${arg[i].autor}</h3>
+                        <p>${arg[i].mensagem}</p>
+                        </div>
+                        `;
+                }
+            }
+            var heightPage = document.getElementById('chat').scrollHeight;
+            chat.scrollTo(0 , heightPage);
+            
+        });
+        socket.on('nova_mensagem', (arg)=>{
+            let chat = document.getElementById('chat');
+            chat.innerHTML = "";
+            for(var i = 0; i < arg.length; i++){
+                if(arg[i].autor.toLowerCase() === me.usuario.toLowerCase()){
+                    chat.innerHTML += `
+                    <div class="msg msg-my">
+                        <h3>Você</h3>
+                        <p>${arg[i].mensagem}</p>
+                        </div>
+                        `;
+                    }else{
+                        chat.innerHTML += `
+                        <div class="msg msg-other">
+                            <h3>${arg[i].autor}</h3>
+                        <p>${arg[i].mensagem}</p>
+                    </div>
+                    `;
+                }
+            }
+            var heightPage = document.getElementById('chat').scrollHeight;
+            chat.scrollTo(0 , heightPage);
+        });
+        document.getElementById('enviar_msg').addEventListener('click', ()=>{
+            let msg = document.getElementById('new_message').value;
+                if(msg == ""){
+                    alert("Digite algo");
+                }else{
+                    new_msg = {
+                        "autor": me.usuario,
+                        "mensagem": msg
+                    };
+                    socket.emit('newmessage', new_msg);
+                    document.getElementById('new_message').value = "";
+                }
+            });
+            
+            /*
+            MINHA MENSSAGEM 
+    <div class="msg msg-other">
+                <h3>Name</h3>
+                <p>Mensagem enviada joi joijioj iojiojoi jio joijioj oijoijio jioj ioj ioj oijoi jiojio jioj oijioj iojio jioj ioj oi jioj oijio jio joi io</p>
+            </div>
+            
+    MENSAGEM DE OUTRO(A)
+    <div class="msg msg-my">
+                <h3>Name</h3>
+                <p>Mensagem enviada joi joijioj iojiojoi jio joijioj oijoijio jioj ioj ioj oijoi jiojio jioj oijioj iojio jioj ioj oi jioj oijio jio joi io</p>
+            </div>*/
+            socket.on('users_on', (arg)=>{
+                let usuarios_online = document.getElementById('usersonline');
+                usuarios_online.innerHTML = `<h2>Usuários online</h2>`;
+                for(var i = 0; i < arg.length; i++){
+                    usuarios_online.innerHTML += `
+                        <div class="on">
+                            <h4>${arg[i].usuario}</h4>
+                        </div>
+                    `;
+                    console.log(arg[i].usuario);
+                }
+            });
+
+            /*
+            let usuarios_online = document.getElementById('usersonline');
+                usuarios_online.innerHTML = `<h2>Usuários online</h2>`;
+                for(var t = 0; t < arg.length; t++){
+                    usuarios_online.innerHTML += `
+                        <div class="on">
+                            <h4>${arg.usuario}</h4>
+                        </div>
+                    `;
+                }
+            */
+
+            // Enviando uma mensagem de "preto" para "lóló"
+/*socket.emit('sendMessageToUser', {
+    senderId: "preto", // ID ou identificador único do remetente
+    receiverId: "lóló", // ID ou identificador único do destinatário
+    message: "OLA LORENA" // Conteúdo da mensagem
+});
+*/
+
+
+    </script>
+</body>
+</html>
